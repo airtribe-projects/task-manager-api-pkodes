@@ -3,6 +3,8 @@ const supertest = require("supertest");
 const app = require("../app");
 const server = supertest(app);
 
+
+
 tap.test("POST /tasks", async (t) => {
   const newTask = {
     title: "New Task",
@@ -10,6 +12,7 @@ tap.test("POST /tasks", async (t) => {
     completed: false,
   };
   const response = await server.post("/tasks").send(newTask);
+  console.log(response,'<<<Response')
   t.equal(response.status, 201);
   t.end();
 });
