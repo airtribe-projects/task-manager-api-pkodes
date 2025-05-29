@@ -60,6 +60,7 @@ router.put('/tasks/:id', (req, res) => {
    const updatedObj = req.body;
 
    const index = tasks.findIndex(task => task.id == id);
+   
    if (index === -1) {
        return res.status(404).send({ message: 'Task not found' });
    }

@@ -1,123 +1,165 @@
-# Task Manager API
+# Task Manager API with Authentication
 
-A simple **Task Management API** built using **Express.js**. This API allows you to perform basic CRUD operations on a list of tasks, along with filtering, sorting, and searching functionality.
+A complete RESTful API for task management with JWT authentication, user preferences, and News API integration.
 
----
+## Table of Contents
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Setup](#-setup)
+- [API Documentation](#-api-documentation)
+  - [Authentication](#-authentication)
+  - [Users](#-users)
+  - [Preferences](#-preferences)
+  - [News](#-news)
+  - [Tasks](#-tasks)
 
-## 🧾 Overview
+## 🎯 Features
 
-This project serves as a basic in-memory task management system. It demonstrates the implementation of RESTful routes using Express. Tasks are stored in memory (no database), making it suitable for learning or prototyping.
+- **User Registration & Authentication**
+- **JWT Token-based Security**
+- **Task CRUD Operations**
+- **User Preference System**
+- **Personalized News Feed**
+- **Input Validation**
+- **Password Hashing**
 
-Each task contains:
-- `id`: Unique identifier
-- `title`: Task title
-- `description`: Task details
-- `completed`: Boolean status of task completion
-- `priority`: Priority level (e.g., low, medium, high)
-- `cd`: Created date
+## 🛠️ Tech Stack
 
----
+| Component       | Technology           |
+|----------------|---------------------|
+| Framework      | Express.js          |
+| Authentication| JWT                 |
+| Password Hashing | bcrypt           |
+| HTTP Client   | Axios               |
+| News Service  | NewsAPI             |
 
-## 🚀 Setup Instructions
+## 🚀 Setup
 
-1. **Clone the Repository**
+### Prerequisites
+- Node.js (v14+)
+- npm/yarn
 
+### Installation
+```bash
+# Clone repository
 git clone https://github.com/your-username/task-manager-api.git
 cd task-manager-api
-Install Dependencies
 
+# Install dependencies
 npm install
+
+# Start server
 node app.js
 
-📮 API Endpoints
 
-🔹 GET /tasks
-Description: Retrieve all tasks
+📚 API Documentation
 
-Query Params:
 
-completed=true: Get only completed tasks
+🔐 Authentication
 
-sort=true: Sort tasks by creation date
+POST /login
+Authenticate user and get JWT token.
 
-Optional Path Param:
+Request:
 
-/tasks/:level: Filter tasks by priority level (e.g., /tasks/high)
-
-📘 Example:
-
-GET /tasks?completed=true
-GET /tasks?sort=true
-GET /tasks/high
-
-🔹 GET /tasks/:id
-Description: Get a specific task by ID
-
-Response: Task object or 404 if not found
-
-📘 Example:
-
-GET /tasks/1
-🔹 POST /tasks
-Description: Create a new task
-
-Body Params (JSON):
-
+json
 {
-  "title": "My Task",
-  "description": "Some details here",
-  "completed": false,
-  "priority": "low"
+  "username": "johndoe",
+  "password": "securepass123"
 }
-Response: Created task object or 400 if title/description missing
+Response:
 
-📘 Example:
+json
+{
+  "msg": "User Authenticated Successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsIn..."
+}
+Errors:
 
+400 - Missing credentials
+
+404 - User not found
+
+401 - Invalid credentials
+
+👥 Users
+POST /users
+Register new user.
+
+Request:
+
+json
+{
+  "username": "newuser",
+  "email": "user@example.com",
+  "password": "securepass123"
+}
+Validation:
+
+Email format validation
+
+Password min 8 characters
+
+Unique username check
+
+⚙️ Preferences
+GET /preferences (Auth)
+Get user preferences.
+
+Headers:
+
+Authorization: <token>
+PUT /preferences (Auth)
+Update preferences.
+
+Request:
+
+json
+{
+  "preferance": "technology"
+}
+📰 News
+GET /news (Auth)
+Get news by preference.
+
+Response:
+
+json
+{
+  "news": [
+    {
+      "id": "tech-crunch",
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com"
+    }
+  ]
+}
+✅ Tasks
+GET /tasks
+Get all tasks with optional filters:
+
+/tasks?completed=true
+
+/tasks?sort=true
+
+/tasks/high (by priority)
 
 POST /tasks
-🔹 PUT /tasks/:id
-Description: Update a task by ID
+Create new task.
 
-Body Params (JSON): Same as POST
+Request:
 
-Response: Updated task or 404/400 if task not found or input is invalid
+json
+{
+  "title": "Complete project",
+  "description": "Finish API documentation",
+  "priority": "high"
+}
+🔒 Security
+JWT with 1-hour expiration
 
-📘 Example:
+bcrypt password hashing (salt rounds: 10)
 
-PUT /tasks/1
-🔹 DELETE /tasks/:id
-Description: Delete a task by ID
+Environment variables for secrets
 
-Response: Remaining tasks list or 404 if not found
-
-📘 Example:
-
-
-DELETE /tasks/1
-🧪 Testing the API
-You can use Postman, cURL, or Supertest (automated tests) to test each endpoint.
-
-Sample cURL:
-
-curl -X POST http://localhost:3000/tasks \
--H "Content-Type: application/json" \
--d '{"title":"Learn Node","description":"Practice Express routing","completed":false,"priority":"medium"}'
-
-📁 Folder Structure
-
-/models
-  └── taskModal.js     # In-memory task array
-/routes
-  └── taskRoutes.js    # Express route handlers
-index.js               # App entry point
-README.md
-
-📌 Notes
-This API does not use a database — all data is stored in memory.
-
-Useful for small demos or practicing RESTful APIs.
-
-🛠️ Tech Stack
-Node.js
-Express.js
-
+Input sanitization
